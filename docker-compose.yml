@@ -1,0 +1,29 @@
+services:
+  foxmar-identity-engine:
+    build:
+      context: .
+      args:
+        INSTALL_INSIGHTFACE: "false"
+    image: foxmar/identity-engine:local
+    container_name: foxmar-identity-engine
+    restart: unless-stopped
+    gpus: all
+    environment:
+      PORTAL_BASE_URL: ${PORTAL_BASE_URL:-https://fox-mar-portal.up.railway.app}
+      IDENTITY_WORKER_TOKEN: ${IDENTITY_WORKER_TOKEN:?set IDENTITY_WORKER_TOKEN in .env}
+      IDENTITY_WORKER_ID: ${IDENTITY_WORKER_ID:-unraid-gtx1660}
+      ENGINE_MODE: ${ENGINE_MODE:-stub}
+      POLL_INTERVAL_SECONDS: ${POLL_INTERVAL_SECONDS:-5}
+      JOB_TYPES: ${JOB_TYPES:-enroll_student_photo,reindex_student_photo,verify_face,identify_faces}
+      REQUEST_TIMEOUT_SECONDS: ${REQUEST_TIMEOUT_SECONDS:-30}
+      HEARTBEAT_INTERVAL_SECONDS: ${HEARTBEAT_INTERVAL_SECONDS:-20}
+      STUB_JOB_RESULT: ${STUB_JOB_RESULT:-fail}
+      MODEL_DIR: /models
+      CACHE_DIR: /cache
+      LOG_DIR: /logs
+      NVIDIA_VISIBLE_DEVICES: ${NVIDIA_VISIBLE_DEVICES:-all}
+      NVIDIA_DRIVER_CAPABILITIES: ${NVIDIA_DRIVER_CAPABILITIES:-compute,utility}
+    volumes:
+      - /mnt/user/appdata/foxmar-identity-engine/models:/models
+      - /mnt/user/appdata/foxmar-identity-engine/cache:/cache
+      - /mnt/user/appdata/foxmar-identity-engine/logs:/logs

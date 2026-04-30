@@ -1,0 +1,6 @@
+# Optional first real model backend. Keep separate so the stub worker can be
+# built even before we finalize model files/backends.
+insightface==0.7.3
+onnx==1.16.2
+scikit-image==0.24.0
+scikit-learn==1.5.2
