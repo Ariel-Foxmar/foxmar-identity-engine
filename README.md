@@ -1,6 +1,6 @@
-# Fox-Mar Identity Engine Worker
+# Identity Engine Worker
 
-Standalone GPU worker for the Fox-Mar Identity Engine.
+Standalone GPU worker for the Identity Engine.
 
 The first version is intentionally a safe handshake worker. It polls the portal,
 claims jobs, heartbeats, and reports a controlled failure until real GPU inference
@@ -67,7 +67,7 @@ nano .env
 Set:
 
 ```text
-PORTAL_BASE_URL=https://fox-mar-portal.up.railway.app
+PORTAL_BASE_URL=https://your-portal-domain.example
 IDENTITY_WORKER_TOKEN=<same token from Railway>
 IDENTITY_WORKER_ID=unraid-gtx1660
 ENGINE_MODE=stub
@@ -89,7 +89,7 @@ docker logs -f foxmar-identity-engine
 Expected startup logs:
 
 ```text
-Starting Fox-Mar Identity Engine worker id=unraid-gtx1660 mode=stub
+Starting Identity Engine worker id=unraid-gtx1660 mode=stub
 NVIDIA GPU detected: NVIDIA GeForce GTX 1660 SUPER, ...
 Portal identity health: ...
 ```
@@ -103,7 +103,7 @@ docker run -d \
   --name foxmar-identity-engine \
   --restart unless-stopped \
   --gpus all \
-  -e PORTAL_BASE_URL="https://fox-mar-portal.up.railway.app" \
+  -e PORTAL_BASE_URL="https://your-portal-domain.example" \
   -e IDENTITY_WORKER_TOKEN="<same token from Railway>" \
   -e IDENTITY_WORKER_ID="unraid-gtx1660" \
   -e ENGINE_MODE="stub" \
@@ -121,13 +121,13 @@ docker run -d \
 From Unraid terminal:
 
 ```bash
-curl -s https://fox-mar-portal.up.railway.app/api/v1/identity/health
+curl -s "$PORTAL_BASE_URL/api/v1/identity/health"
 ```
 
 Worker-auth check:
 
 ```bash
-curl -s -X POST https://fox-mar-portal.up.railway.app/api/v1/identity/jobs/next \
+curl -s -X POST "$PORTAL_BASE_URL/api/v1/identity/jobs/next" \
   -H "Authorization: Bearer $IDENTITY_WORKER_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"worker_id":"unraid-manual-test"}'

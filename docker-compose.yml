@@ -3,21 +3,25 @@ services:
     build:
       context: .
       args:
-        INSTALL_INSIGHTFACE: "false"
+        INSTALL_INSIGHTFACE: ${INSTALL_INSIGHTFACE:-false}
     image: foxmar/identity-engine:local
     container_name: foxmar-identity-engine
     restart: unless-stopped
     gpus: all
     environment:
-      PORTAL_BASE_URL: ${PORTAL_BASE_URL:-https://fox-mar-portal.up.railway.app}
+      PORTAL_BASE_URL: ${PORTAL_BASE_URL:?set PORTAL_BASE_URL in .env}
       IDENTITY_WORKER_TOKEN: ${IDENTITY_WORKER_TOKEN:?set IDENTITY_WORKER_TOKEN in .env}
       IDENTITY_WORKER_ID: ${IDENTITY_WORKER_ID:-unraid-gtx1660}
       ENGINE_MODE: ${ENGINE_MODE:-stub}
       POLL_INTERVAL_SECONDS: ${POLL_INTERVAL_SECONDS:-5}
+      IDENTITY_WORKER_BATCH_SIZE: ${IDENTITY_WORKER_BATCH_SIZE:-15}
       JOB_TYPES: ${JOB_TYPES:-enroll_student_photo,reindex_student_photo,verify_face,identify_faces}
       REQUEST_TIMEOUT_SECONDS: ${REQUEST_TIMEOUT_SECONDS:-30}
       HEARTBEAT_INTERVAL_SECONDS: ${HEARTBEAT_INTERVAL_SECONDS:-20}
       STUB_JOB_RESULT: ${STUB_JOB_RESULT:-fail}
+      INSIGHTFACE_MODEL_NAME: ${INSIGHTFACE_MODEL_NAME:-buffalo_l}
+      INSIGHTFACE_DET_SIZE: ${INSIGHTFACE_DET_SIZE:-640}
+      ONNXRUNTIME_PROVIDERS: ${ONNXRUNTIME_PROVIDERS:-CUDAExecutionProvider,CPUExecutionProvider}
       MODEL_DIR: /models
       CACHE_DIR: /cache
       LOG_DIR: /logs
