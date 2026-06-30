@@ -15,7 +15,7 @@ services:
       ENGINE_MODE: ${ENGINE_MODE:-stub}
       POLL_INTERVAL_SECONDS: ${POLL_INTERVAL_SECONDS:-5}
       IDENTITY_WORKER_BATCH_SIZE: ${IDENTITY_WORKER_BATCH_SIZE:-15}
-      JOB_TYPES: ${JOB_TYPES:-enroll_student_photo,reindex_student_photo,verify_face,identify_faces}
+      JOB_TYPES: ${JOB_TYPES:-enroll_student_photo,reindex_student_photo,verify_face,identify_faces,identify_faces_basic}
       REQUEST_TIMEOUT_SECONDS: ${REQUEST_TIMEOUT_SECONDS:-30}
       HEARTBEAT_INTERVAL_SECONDS: ${HEARTBEAT_INTERVAL_SECONDS:-20}
       STUB_JOB_RESULT: ${STUB_JOB_RESULT:-fail}

@@ -102,7 +102,7 @@ class WorkerConfig:
             batch_size=min(_env_int('IDENTITY_WORKER_BATCH_SIZE', 15, minimum=1), 50),
             request_timeout_seconds=_env_int('REQUEST_TIMEOUT_SECONDS', 30, minimum=3),
             heartbeat_interval_seconds=_env_int('HEARTBEAT_INTERVAL_SECONDS', 20, minimum=5),
-            job_types=_split_csv(_env('JOB_TYPES', 'enroll_student_photo,reindex_student_photo,verify_face,identify_faces')),
+            job_types=_split_csv(_env('JOB_TYPES', 'enroll_student_photo,reindex_student_photo,verify_face,identify_faces,identify_faces_basic')),
             stub_job_result=_env('STUB_JOB_RESULT', 'fail').lower(),
             run_once=_env_bool('RUN_ONCE', False),
             model_dir=_env('MODEL_DIR', '/models'),
@@ -550,7 +550,7 @@ class IdentityWorker:
                 if job_type in {'enroll_student_photo', 'reindex_student_photo'}:
                     self.process_student_photo_enrollment(job)
                     return
-                if job_type == 'identify_faces':
+                if job_type in {'identify_faces', 'identify_faces_basic'}:
                     self.process_identify_faces(job)
                     return
                 self.client.fail(
@@ -639,8 +639,8 @@ class IdentityWorker:
 
         result = self.backend().identify_faces(job, image_bytes, headers)
         self.client.complete(job_uuid, result_payload=result, templates=[])
-        log.info('Completed identify_faces job uuid=%s faces=%s embedding_model=%s',
-                 job_uuid, result.get('faces_processed'), result.get('embedding_model'))
+        log.info('Completed %s job uuid=%s faces=%s embedding_model=%s',
+                 job.get('job_type') or 'identify_faces', job_uuid, result.get('faces_processed'), result.get('embedding_model'))
 
     def process_stub(self, job: Dict[str, Any]) -> None:
         job_uuid = job['job_uuid']

@@ -86,6 +86,25 @@ Watch logs:
 docker logs -f foxmar-identity-engine
 ```
 
+## CaptionMate Basic CPU Worker
+
+The portal can now target two identify job types:
+
+- `identify_faces` for CaptionMate Pro / GPU workers.
+- `identify_faces_basic` for CaptionMate Basic / CPU workers.
+
+To run a CPU-only Basic worker, create a second worker/container with a unique `IDENTITY_WORKER_ID` and these environment values:
+
+```text
+ENGINE_MODE=insightface
+JOB_TYPES=identify_faces_basic
+ONNXRUNTIME_PROVIDERS=CPUExecutionProvider
+IDENTITY_WORKER_BATCH_SIZE=1
+POLL_INTERVAL_SECONDS=1
+```
+
+Set `JOB_TYPES` explicitly in production. The worker default includes both `identify_faces` and `identify_faces_basic` for convenience, but a split deployment should keep the GPU worker on `JOB_TYPES=enroll_student_photo,reindex_student_photo,identify_faces` so Pro jobs and reference builds stay on the GPU. During rollout, the portal still falls back to the legacy Basic matcher if the Basic CPU job is not claimed or completed quickly.
+
 Expected startup logs:
 
 ```text
